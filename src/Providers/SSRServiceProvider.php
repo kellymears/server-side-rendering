@@ -1,13 +1,13 @@
 <?php
 
-namespace TinyPixel\SSR;
+namespace TinyPixel\SSR\Providers;
 
 use TinyPixel\SSR\Engines\V8;
 use TinyPixel\SSR\Engines\Node;
 use TinyPixel\SSR\Resolvers\MixResolver;
 use Roots\Acorn\ServiceProvider;
 
-class SsrServiceProvider extends ServiceProvider
+class SSRServiceProvider extends ServiceProvider
 {
     /**
      * Bootstrap the application services.
@@ -41,18 +41,15 @@ class SsrServiceProvider extends ServiceProvider
             return $this->app->make($this->app->config->get('ssr.engine'));
         });
 
-        $this->app->resolving(
-            Renderer::class,
-            function (Renderer $serverRenderer) {
-                return $serverRenderer
-                    ->enabled($this->app->config->get('ssr.enabled'))
-                    ->debug($this->app->config->get('ssr.debug'))
-                    ->context('url', $this->app->request->getRequestUri())
-                    ->context($this->app->config->get('ssr.context'))
-                    ->env($this->app->config->get('ssr.env'))
-                    ->resolveEntryWith(new MixResolver($this->app->config->get('ssr.mix')));
-            }
-        );
+        $this->app->resolving(Renderer::class, function (Renderer $serverRenderer) {
+            return $serverRenderer
+                ->enabled($this->app->config->get('ssr.enabled'))
+                ->debug($this->app->config->get('ssr.debug'))
+                ->context('url', $this->app->request->getRequestUri())
+                ->context($this->app->config->get('ssr.context'))
+                ->env($this->app->config->get('ssr.env'))
+                ->resolveEntryWith(new MixResolver($this->app->config->get('ssr.mix')));
+        });
 
         $this->app->alias(Renderer::class, 'ssr');
     }
