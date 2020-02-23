@@ -6,7 +6,7 @@ return [
     /*
      * Enable or disable the server renderer. Enabled in production by default.
      */
-    'enabled' => env('APP_ENV') === 'production',
+    'enabled' => defined('WP_ENV') && WP_ENV === 'production',
 
     /*
      * When server side rendering goes wrong, nothing will be rendered so the
@@ -14,27 +14,21 @@ return [
      * `debug` is enabled, an exception will be thrown when the JavaScript can't
      * be executed.
      */
-    'debug' => defined('WP_DEBUG') ? WP_DEBUG : false,
-
-    /*
-     * Set to true if you're using Laravel Mix, then you can pass a script
-     * identifier to `ssr` instead of a full path.
-     */
-    'mix' => true,
+    'debug' => defined('WP_ENV') && WP_ENV === 'development',
 
     /*
      * The engine class is used to execute JavaScript. Node requires you to set
      * up some extra configuration below. If you want to use the V8 engine, make
      * sure the v8js php extension is available.
      */
-    'engine' => env('SSR_ENGINE', \TinyPixel\SSR\Node::class),
+    'engine' => env('SSR_ENGINE', \TinyPixel\SSR\Engines\Node::class),
 
     /*
      * Extra setup for the Node engine.
      */
     'node' => [
-        'node_path' => env('NODE_PATH', '/usr/local/bin/node'),
-        'temp_path' => get_theme_file_path('storage/framework/cache'),
+        'node_path' => env('NODE_PATH', '/usr/bin/node'),
+        'temp_path' => env('NODE_TEMP_PATH', get_theme_file_path('storage/framework/cache/node')),
     ],
 
     /*
@@ -55,6 +49,5 @@ return [
      */
     'env' => [
         'NODE_ENV' => 'production',
-        'VUE_ENV' => 'server',
     ],
 ];

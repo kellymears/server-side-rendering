@@ -1,6 +1,6 @@
 <?php
 
-namespace TinyPixel\SSR;
+namespace TinyPixel\SSR\Engines;
 
 interface Engine
 {
